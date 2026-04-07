@@ -3,12 +3,16 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 import pool from './configs/db.js';
 import ratingsRouter from './routes/ratings.routes.js';
+import authRouter from './routes/auth.routes.js';
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(express.json());
+
+app.use('/api/auth',authRouter);
 app.use('/api/ratings',ratingsRouter);
+
 const apiKey = process.env.API_KEY;
 const apiEndpoint = process.env.API_ENDPOINT;
 const apiToken = process.env.API_TOKEN;
@@ -31,7 +35,7 @@ app.get('/',async (req,res) => {
         });
         const fields = ['title','release_date','id','overview','poster_path'];
         const movies = response.data.results.map((item)=>Object.fromEntries(Object.entries(item).filter(([key])=>fields.includes(key))));
-        
+
         /* adding the pool to query the ratings and reviews */
         const enrichedMovies = await Promise.all(movies.map(async(movie)=>{
             const ratings = await pool.query('SELECT AVG(rating) as average_rating,COUNT(rating) as total_ratings,COUNT(review_text) as total_reviews FROM ratings WHERE tmdb_movie_id = $1',[movie.id]);
