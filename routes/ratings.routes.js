@@ -2,11 +2,14 @@ import express from 'express';
 import pool from '../configs/db.js';
 import dotenv from 'dotenv';
 import axios from 'axios';
+import verifyToken from '../middlewares/auth.middleware.js';
+
 const router = express.Router();
 
 dotenv.config();
-router.post('/',async(req,res)=>{
-    const {user_id,tmdb_movie_id,review_text,rating,overwrite_ratings} = req.body;
+router.post('/',verifyToken,async(req,res)=>{
+    const {tmdb_movie_id,review_text,rating,overwrite_ratings} = req.body;
+    const user_id = req.user.user_id;
     const existing = await pool.query(
         'SELECT * FROM ratings WHERE user_id = $1 AND tmdb_movie_id = $2',
         [user_id,tmdb_movie_id]
@@ -31,9 +34,10 @@ router.post('/',async(req,res)=>{
     }
 });
 
-router.delete('/', async(req,res)=>{
-        const {user_id,tmdb_movie_id} = req.body;
-        const query = 'DELETE FROM ratings where user_id=$1 AND tmdb_movie_id=$2 RETURNING *';
+router.delete('/', verifyToken,async(req,res)=>{
+        const {tmdb_movie_id} = req.body;
+        const user_id = req.user.user_id;
+        const query = 'DELETE FROM ratings WHERE user_id=$1 AND tmdb_movie_id=$2 RETURNING *';
         const result = await pool.query(query, [user_id,tmdb_movie_id]); 
         if(result.rows.length === 0){
             return res.status(404).json({message: "No review found to delete"});

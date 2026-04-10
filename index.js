@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import pool from './configs/db.js';
 import ratingsRouter from './routes/ratings.routes.js';
 import authRouter from './routes/auth.routes.js';
+import favRouter from './routes/fav.routes.js';
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
@@ -12,6 +13,7 @@ app.use(express.json());
 
 app.use('/api/auth',authRouter);
 app.use('/api/ratings',ratingsRouter);
+app.use('/api/favorites',favRouter);
 
 const apiKey = process.env.API_KEY;
 const apiEndpoint = process.env.API_ENDPOINT;

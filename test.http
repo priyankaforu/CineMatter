@@ -1,9 +1,0 @@
-###
-POST http://localhost:3000/api/auth
-Content-Type: application/json
-
-{
-    "user_name": "priyanka",
-    "user_mail": "priyanka@test.com",
-    "password": "mypassword123"
-}

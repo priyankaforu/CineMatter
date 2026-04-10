@@ -1,0 +1,11 @@
+###
+POST http://localhost:3000/api/ratings
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE3NzU4MTEwMTUsImV4cCI6MTc3NTg5NzQxNX0.96_0c3bR4OXq8gsE2ydkgw_FX8nGBjK6IU_I-n78BuM
+
+{
+    "tmdb_movie_id": 1660681,
+    "rating": 8,
+    "overwrite_ratings":true,
+    "review_text": "Amazing movie for sure"
+}
