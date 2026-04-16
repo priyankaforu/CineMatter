@@ -6,11 +6,13 @@ import ratingsRouter from './routes/ratings.routes.js';
 import authRouter from './routes/auth.routes.js';
 import favRouter from './routes/fav.routes.js';
 import movieRouter from './routes/movies.routes.js';
+import cors from 'cors';
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.use('/api/auth',authRouter);
 app.use('/api/ratings',ratingsRouter);
