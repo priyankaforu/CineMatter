@@ -2,21 +2,30 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { getLanguage } from '../utils/getLanguage.js';
+import ReviewModel from '../components/ReviewModel.jsx';
 
 const MovieDetails = () => {
     const { id } = useParams();
     const [movieDetails, setMovieDetails] = useState(null);
+    const [showReviewModel, setShowReviewModel] = useState(false);
+
+    const fetchMovieDetails = () => {
+        axios.get(`http://localhost:3000/api/ratings/${id}`).then(res => setMovieDetails(res.data));
+    }
 
     useEffect(() => {
-        axios.get(`http://localhost:3000/api/ratings/${id}`).then(res => setMovieDetails(res.data));
+        fetchMovieDetails();
     }, [id]);
 
     if (!movieDetails) return <div>loading...</div>;
 
     const getRatingColor = (rating) => {
         if (rating >= 7) return 'bg-green-600';
-        if (rating >= 5) return 'bg-yellow-400';
+        if (rating >= 5) return 'bg-orange-800';
         return 'bg-red-500';
+    }
+    const handleSubmit = () => {
+        setShowReviewModel(true);
     }
 
     return (
@@ -37,6 +46,15 @@ const MovieDetails = () => {
                     <p className="text-gray-400">Language: {getLanguage(movieDetails.original_language)}</p>
                     <p className="text-yellow-400 mt-4">Rating: {movieDetails.rating}/10</p>
                     <p className="text-gray-400">Total Ratings: {movieDetails.total_ratings}</p>
+                    <div className="flex mt-10">
+                        {!showReviewModel && (<button className="bg-yellow-800 px-4 py-2 rounded-sm cursor-pointer"
+                            onClick={handleSubmit}>
+                            Rate now
+                        </button>)}
+                        <ReviewModel isOpen={showReviewModel} onClose={() => setShowReviewModel(false)}
+                            movieId={id} onReviewPosted={fetchMovieDetails} />
+                    </div>
+
                 </div>
             </div>
             <div className="flex flex-col gap-2">
