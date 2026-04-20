@@ -59,7 +59,7 @@ router.get('/:id', async (req, res) => {
             }
         });
         //Fetch movie from tmdb
-        const fields = ['title', 'release_date', 'overview', 'poster_path', 'revenue', 'runtime', 'original_language', 'genres', 'status']
+        const fields = ['id', 'title', 'release_date', 'overview', 'poster_path', 'revenue', 'runtime', 'original_language', 'genres', 'status']
 
         const movie_data = tmdbResponse.data
         const movie = Object.fromEntries(Object.entries(movie_data).filter(([key]) => fields.includes(key)));

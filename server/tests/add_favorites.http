@@ -1,6 +1,5 @@
 ###
 GET http://localhost:3000/api/favorites
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE3NzY1MjUyODMsImV4cCI6MTc3NjYxMTY4M30.8fC6NjLSum77bYyB9mO3wYSQNVK4cv_kJx6PnbYH-PY 
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE3NzY2NjcyMjIsImV4cCI6MTc3Njc1MzYyMn0.daKMyu03Ystx7oP2GkEvzdgLcYOByy030Zm-c_dV1KE
 

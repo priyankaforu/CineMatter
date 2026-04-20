@@ -3,14 +3,30 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { getLanguage } from '../utils/getLanguage.js';
 import ReviewModel from '../components/ReviewModel.jsx';
+import { Heart } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const MovieDetails = () => {
     const { id } = useParams();
     const [movieDetails, setMovieDetails] = useState(null);
     const [showReviewModel, setShowReviewModel] = useState(false);
-
+    const token = localStorage.getItem('token');
     const fetchMovieDetails = () => {
         axios.get(`http://localhost:3000/api/ratings/${id}`).then(res => setMovieDetails(res.data));
+    }
+
+    const onAddFavorites = (movieId, movieTitle) => {
+        axios.post('http://localhost:3000/api/favorites',
+            { tmdb_movie_id: movieId },
+            { headers: { Authorization: `Bearer ${token}` } }).then(() => {
+                toast.success(`${movieTitle} is added to your favorites`);
+            }).catch((error) => {
+                if (error.response?.status == 400) {
+                    toast.info('Already in your favorites');
+                } else {
+                    toast.error(`${movieTitle} is failed to add in to favorites`);
+                }
+            })
     }
 
     useEffect(() => {
@@ -27,7 +43,6 @@ const MovieDetails = () => {
     const handleSubmit = () => {
         setShowReviewModel(true);
     }
-
     return (
         <div className="flex flex-col gap-y-8 p-4 m-10">
             <div className="flex flex-row gap-x-10">
@@ -47,10 +62,16 @@ const MovieDetails = () => {
                     <p className="text-yellow-400 mt-4">Rating: {movieDetails.rating}/10</p>
                     <p className="text-gray-400">Total Ratings: {movieDetails.total_ratings}</p>
                     <div className="flex mt-10">
-                        {!showReviewModel && (<button className="bg-yellow-800 px-4 py-2 rounded-sm cursor-pointer"
-                            onClick={handleSubmit}>
-                            Rate now
-                        </button>)}
+                        {!showReviewModel && (<div className="flex gap-4">
+                            <button className="bg-yellow-800 px-4 py-2 rounded-sm cursor-pointer"
+                                onClick={handleSubmit}>
+                                Rate now
+                            </button>
+                            <button className="flex items-center gap-2 bg-green-700 px-4 py-2 rounded-lg transition duration-300 ease-in-out text-white cursor-pointer hover:bg-green-600" onClick={() => onAddFavorites(movieDetails.id, movieDetails.title)}>
+                                <Heart size={20} />
+                                <span>Add to Favorites</span>
+                            </button>
+                        </div>)}
                         <ReviewModel isOpen={showReviewModel} onClose={() => setShowReviewModel(false)}
                             movieId={id} onReviewPosted={fetchMovieDetails} />
                     </div>
@@ -76,8 +97,8 @@ const MovieDetails = () => {
                 </div>
                 <div className="flex flex-col gap-2 divide-y divide-gray-200">
                     {movieDetails.reviews.map(review => (
-                        <div className="flex gap-4 items-center justify-between">
-                            <div className="flex flex-col py-2 text-gray-100 text-lg" key={review.user_id}>
+                        <div className="flex gap-4 items-center justify-between" key={review.user_id}>
+                            <div className="flex flex-col py-2 text-gray-100 text-lg" >
                                 {review.review_text}
                             </div>
                             <div className={`${getRatingColor(review.rating)} flex text-gray-100 px-3 py-0.5 rounded-sm`} key={review.user_id}>
