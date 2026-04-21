@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { getLanguage } from '../utils/getLanguage.js';
 import ReviewModel from '../components/ReviewModel.jsx';
+import ConfirmationModel from '../components/confirmationModel.jsx';
+
 import { Heart } from 'lucide-react';
 import { toast } from 'react-toastify';
 
@@ -10,27 +12,40 @@ const MovieDetails = () => {
     const { id } = useParams();
     const [movieDetails, setMovieDetails] = useState(null);
     const [showReviewModel, setShowReviewModel] = useState(false);
+    const [favorites, setFavorites] = useState(false);
+    const [showConfirmationModel, setShowConfirmationModel] = useState(false);
+
     const token = localStorage.getItem('token');
     const fetchMovieDetails = () => {
         axios.get(`http://localhost:3000/api/ratings/${id}`).then(res => setMovieDetails(res.data));
     }
 
     const onAddFavorites = (movieId, movieTitle) => {
-        axios.post('http://localhost:3000/api/favorites',
-            { tmdb_movie_id: movieId },
-            { headers: { Authorization: `Bearer ${token}` } }).then(() => {
-                toast.success(`${movieTitle} is added to your favorites`);
-            }).catch((error) => {
-                if (error.response?.status == 400) {
-                    toast.info('Already in your favorites');
-                } else {
-                    toast.error(`${movieTitle} is failed to add in to favorites`);
-                }
-            })
+        if (!favorites) {
+            axios.post('http://localhost:3000/api/favorites',
+                { tmdb_movie_id: movieId },
+                { headers: { Authorization: `Bearer ${token}` } }).then(() => {
+                    setFavorites(true);
+                    toast.success(`${movieTitle} is added to your favorites`);
+                })
+        }
+        else {
+            setShowConfirmationModel(true);
+        }
+    }
+
+    const checkFavorites = () => {
+        axios.get('http://localhost:3000/api/favorites',
+            { headers: { Authorization: `Bearer ${token}` } }
+        ).then(res => {
+            const isFavorite = res.data.some(fav => fav.tmdb_movie_id == Number(id));
+            setFavorites(isFavorite);
+        })
     }
 
     useEffect(() => {
         fetchMovieDetails();
+        checkFavorites();
     }, [id]);
 
     if (!movieDetails) return <div>loading...</div>;
@@ -67,10 +82,11 @@ const MovieDetails = () => {
                                 onClick={handleSubmit}>
                                 Rate now
                             </button>
-                            <button className="flex items-center gap-2 bg-green-700 px-4 py-2 rounded-lg transition duration-300 ease-in-out text-white cursor-pointer hover:bg-green-600" onClick={() => onAddFavorites(movieDetails.id, movieDetails.title)}>
-                                <Heart size={20} />
-                                <span>Add to Favorites</span>
-                            </button>
+                            <ConfirmationModel isOpen={showConfirmationModel} onClose={() => setShowConfirmationModel(false)} movieId={id} movieTitle={movieDetails.title} onDeleted={checkFavorites} />
+                            {!showConfirmationModel && <button className="flex items-center gap-2 bg-green-700 px-4 py-2 rounded-lg transition duration-300 ease-in-out text-white cursor-pointer hover:bg-green-600" onClick={() => onAddFavorites(movieDetails.id, movieDetails.title)}>
+                                <Heart size={20} className={favorites ? "fill-white" : "fill-none"} />
+                                <span>{favorites ? 'Dislike' : 'Like'}</span>
+                            </button>}
                         </div>)}
                         <ReviewModel isOpen={showReviewModel} onClose={() => setShowReviewModel(false)}
                             movieId={id} onReviewPosted={fetchMovieDetails} />
