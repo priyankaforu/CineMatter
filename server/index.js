@@ -6,6 +6,8 @@ import ratingsRouter from './routes/ratings.routes.js';
 import authRouter from './routes/auth.routes.js';
 import favRouter from './routes/fav.routes.js';
 import movieRouter from './routes/movies.routes.js';
+import forgotRouter from './routes/password.routes.js';
+
 import cors from 'cors';
 
 dotenv.config();
@@ -14,11 +16,12 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.use('/api/auth',authRouter);
-app.use('/api/ratings',ratingsRouter);
-app.use('/api/favorites',favRouter);
-app.use('/api/movies',movieRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/ratings', ratingsRouter);
+app.use('/api/favorites', favRouter);
+app.use('/api/movies', movieRouter);
+app.use('/api/password', forgotRouter);
 
-app.listen(PORT, ()=>{
+app.listen(PORT, () => {
     console.log(`Example app listening on port: ${PORT}`);
 })
