@@ -1,6 +1,6 @@
 import pool from '../configs/db.js';
 
-const fields = ['title','release_date','id','overview','poster_path'];
+const fields = ['title', 'release_date', 'id', 'overview', 'poster_path'];
 
 export const enrichMovies = async (results) => {
     const movies = results.map((item) =>

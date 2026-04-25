@@ -5,6 +5,8 @@ import Header from './components/header.jsx';
 import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
 import Profile from './pages/Profile.jsx';
+import Logout from './pages/Logout.jsx';
+import { ChevronDown } from 'lucide-react';
 // App.jsx
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -21,6 +23,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/logout" element={<Logout />} />
             </Routes>
         </BrowserRouter>
     );

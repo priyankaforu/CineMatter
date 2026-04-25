@@ -11,9 +11,9 @@ const router = express.Router();
 dotenv.config();
 
 router.post('/signup', async (req, res) => {
-    const { user_name, user_mail, password } = req.body;
-    if (!password) {
-        return res.status(400).json({ message: "Password is required" });
+    const { user_name, user_mail, password, preferred_lang } = req.body;
+    if (!password || !user_name || !user_mail || !preferred_lang) {
+        return res.status(400).json({ message: "All fields are required" });
     }
     // unique mail response
     const existing_mail = await pool.query('SELECT * FROM users WHERE user_mail = $1', [user_mail]);
@@ -27,16 +27,14 @@ router.post('/signup', async (req, res) => {
         return res.status(400).json({ message: "The user name is already existing , try something different" });
     }
 
-    if (existing_name.rows.length < 0 && existing_mail.rows.length < 0) {
-        const hashPassword = await bcrypt.hash(password, 10);
-        const query = 'INSERT INTO users(user_name,user_mail,password_hash) VALUES($1,$2,$3) RETURNING *';
-        try {
-            const result = await pool.query(query, [user_name, user_mail, hashPassword]);
-            const { password_hash, ...user } = result.rows[0];
-            res.status(201).json(user);
-        } catch (err) {
-            res.status(500).send(err.message);
-        }
+    const hashPassword = await bcrypt.hash(password, 10);
+    const query = 'INSERT INTO users(user_name,user_mail,password_hash,preferred_lang) VALUES($1,$2,$3,$4) RETURNING *';
+    try {
+        const result = await pool.query(query, [user_name, user_mail, hashPassword, preferred_lang]);
+        const { password_hash, ...user } = result.rows[0];
+        res.status(201).json(user);
+    } catch (err) {
+        res.status(500).send(err.message);
     }
 });
 

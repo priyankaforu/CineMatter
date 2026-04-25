@@ -7,6 +7,7 @@ import authRouter from './routes/auth.routes.js';
 import favRouter from './routes/fav.routes.js';
 import movieRouter from './routes/movies.routes.js';
 import forgotRouter from './routes/password.routes.js';
+import friendsRouter from './routes/friends.routes.js';
 
 import cors from 'cors';
 
@@ -21,6 +22,7 @@ app.use('/api/ratings', ratingsRouter);
 app.use('/api/favorites', favRouter);
 app.use('/api/movies', movieRouter);
 app.use('/api/password', forgotRouter);
+app.use('/api/friends', friendsRouter);
 
 app.listen(PORT, () => {
     console.log(`Example app listening on port: ${PORT}`);

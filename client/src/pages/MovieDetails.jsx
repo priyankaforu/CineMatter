@@ -56,19 +56,27 @@ const MovieDetails = () => {
         return 'bg-red-500';
     }
     const handleSubmit = () => {
+        if (!token) {
+            alert("Please Login To Rate or Review");
+            return;
+        }
         setShowReviewModel(true);
     }
     return (
         <div className="flex flex-col gap-y-8 p-4 m-10">
             <div className="flex flex-row gap-x-10">
-                <div className="flex">
-                    {movieDetails.poster_path && (<img src={movieDetails.poster_path
-                        ? `https://image.tmdb.org/t/p/w200${movieDetails.poster_path}`
-                        : `https://via.placeholder.com/200x300?text=No+Poster`}
-                        alt={movieDetails.poster_path}
-                        className="rounded-lg w-64 shrink-0"
-                    />)}
-                </div>
+                {movieDetails.poster_path ? (
+                    <img
+                        className="w-64 h-96 object-cover rounded-lg shadow-lg"
+                        src={`https://image.tmdb.org/t/p/w200${movieDetails.poster_path}`}
+                        alt={movieDetails.title}
+                    />
+                ) : (
+                    <div className="w-64 h-96 bg-gradient-to-b from-gray-700 to-gray-900 rounded-lg shadow-lg flex flex-col items-center justify-center p-6">
+                        <span className="text-gray-400 text-center">{movieDetails.title}</span>
+                        <span className="text-gray-500 text-sm mt-2">No poster available</span>
+                    </div>
+                )}
                 <div className="flex flex-col">
                     <h1>{movieDetails.title}</h1>
                     <p className="text-gray-400 mt-2">Release: {movieDetails.release_date}</p>

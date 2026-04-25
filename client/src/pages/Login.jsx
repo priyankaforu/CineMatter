@@ -56,7 +56,7 @@ const Login = () => {
                         value={formData.userid}
                         onChange={handleChange}
                         placeholder="User name or email id"
-                        className={`${inputClass} pl-10`}
+                        className={`${inputClass} pl-10 caret-white`}
                     />
                 </div>
                 <div className="relative">
@@ -66,7 +66,7 @@ const Login = () => {
                         value={formData.password}
                         onChange={handleChange}
                         placeholder="Type your password"
-                        className={`${inputClass} pl-10`}
+                        className={`${inputClass} pl-10 caret-white`}
                         type={showPasswords.password ? "text" : "password"}
                     />
                     <div className="absolute right-3 top-3.5 text-gray-400" onClick={() => togglePassword('password')}>

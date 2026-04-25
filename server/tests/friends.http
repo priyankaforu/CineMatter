@@ -1,0 +1,38 @@
+###
+POST http://localhost:3000/api/friends/send
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo4LCJpYXQiOjE3NzcxMjU3OTAsImV4cCI6MTc3NzIxMjE5MH0.OtzWWlzcBryQLpNuEXgzqpLeAn3ntHhlk972GFJZcMs
+
+{
+    "receiver_id": 6
+}
+### Login to get token
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+    "user_id": "admin",
+    "password": "Pinky123?"
+}
+
+### Search users
+GET http://localhost:3000/api/users/search?q=admin
+Authorization: Bearer <paste_token_here>
+
+### Get pending requests
+GET http://localhost:3000/api/friends/requests
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2LCJpYXQiOjE3NzcxMzE1OTQsImV4cCI6MTc3NzIxNzk5NH0.-5baNrPkuNf-grtQnNyA49Tc-1_oXT4eCncyOFyyDqs
+
+### Accept friend request
+PUT http://localhost:3000/api/friends/1/accept
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2LCJpYXQiOjE3NzcxMzE1OTQsImV4cCI6MTc3NzIxNzk5NH0.-5baNrPkuNf-grtQnNyA49Tc-1_oXT4eCncyOFyyDqs
+
+
+### Delete friendship
+DELETE http://localhost:3000/api/friends/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2LCJpYXQiOjE3NzcxMzE1OTQsImV4cCI6MTc3NzIxNzk5NH0.-5baNrPkuNf-grtQnNyA49Tc-1_oXT4eCncyOFyyDqs
+
+### find all users
+GET http://localhost:3000/api/friends/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2LCJpYXQiOjE3NzcxMzE1OTQsImV4cCI6MTc3NzIxNzk5NH0.-5baNrPkuNf-grtQnNyA49Tc-1_oXT4eCncyOFyyDqs
+

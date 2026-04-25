@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const Profile = () => {
     const [profile, setProfile] = useState(null);
@@ -30,7 +31,15 @@ const Profile = () => {
             data: { tmdb_movie_id: movieId }
         }).then(() => fetchFavorites());
     };
-    if (!profile) return <div>loading...</div>;
+    if (!profile && token) return <div>loading...</div>;
+    if (!token) {
+        return (
+            <div className="flex h-screen justify-center items-center">
+                <Link to="/login" className="text-2xl text-yellow-600 underline"> Please Login To Access Your Profile</Link>
+            </div>
+        )
+    }
+
     return (
         <div className="flex flex-col items-center mt-10 px-6 w-full">
             <div className="w-full max-w-2xl flex flex-col gap-10">
