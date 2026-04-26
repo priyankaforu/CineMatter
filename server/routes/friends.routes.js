@@ -1,10 +1,13 @@
 import express from 'express';
 import pool from '../configs/db.js';
 import verifyToken from '../middlewares/auth.middleware.js';
+import dotenv from 'dotenv';
+import axios from 'axios';
 
 const router = express.Router();
+dotenv.config();
 
-router.post('/send', verifyToken, async (req, res) => {
+router.post('/sendrequest', verifyToken, async (req, res) => {
     const { receiver_id } = req.body;
     const sender_id = req.user.user_id;
     const receiver_data = 'SELECT user_name FROM users WHERE id=$1';
@@ -37,9 +40,13 @@ router.put('/:id/accept', verifyToken, async (req, res) => {
     if (checkStatus.rows[0].status === 'accepted') {
         return res.status(400).json({ message: "Friend Request Already Accepted" });
     }
+    const sender_id = checkStatus.rows[0].sender_id;
     const sender = await pool.query('SELECT user_name FROM users where id=$1', [checkStatus.rows[0].sender_id]);
     try {
         const updateStatus = await pool.query('UPDATE friends SET status=$1 WHERE id=$2 RETURNING *', ['accepted', friend_id]);
+
+        // Delete any reverse pending request
+        await pool.query('DELETE FROM friends WHERE sender_id=$1 AND receiver_id=$2', [receiver_id, sender_id]);
         return res.status(200).json({ message: `Friend request is accepted from ${sender.rows[0].user_name}`, updated: updateStatus.rows[0] });
     } catch (error) {
         res.status(400).json({ message: error.message })
@@ -50,7 +57,7 @@ router.get('/requests', verifyToken, async (req, res) => {
     const receiver_id = req.user.user_id;
     const requestedUsers = await pool.query('SELECT f.id,f.sender_id,f.created_at, u.user_name, u.preferred_lang FROM friends f JOIN users u ON f.sender_id=u.id WHERE receiver_id=$1 AND status=$2', [receiver_id, 'pending']);
     if (requestedUsers.rows.length === 0) {
-        return res.status(400).json({ message: "No Friend Requests Yet" });
+        return res.status(200).json([]);
     }
     res.status(200).json(requestedUsers.rows);
 });
@@ -97,11 +104,100 @@ router.delete('/:id', verifyToken, async (req, res) => {
         return res.status(403).json({ message: "Not authorized" });
     }
     if (checkFriend.rows[0].status === 'pending') {
-        const rejectFriend = await pool.query('DELETE * FROM friends WHERE id=$1', [deleteId]);
+        const rejectFriend = await pool.query('DELETE FROM friends WHERE id=$1', [deleteId]);
         return res.status(200).json({ message: "Successfully Rejected" })
     }
     const deleteFriend = await pool.query('DELETE FROM friends WHERE id=$1', [deleteId]);
     res.status(200).json({ message: "Successfully Deleted" })
+});
+
+router.get('/sent', verifyToken, async (req, res) => {
+    const sender_id = req.user.user_id;
+    const sentRequests = await pool.query(
+        'SELECT f.id, f.receiver_id, f.status, f.created_at, u.user_name, u.preferred_lang FROM friends f JOIN users u ON f.receiver_id = u.id WHERE f.sender_id = $1 AND f.status=$2',
+        [sender_id, 'pending']
+    );
+    res.status(200).json(sentRequests.rows);
+});
+
+//fetch all the friends with accepted status
+
+router.get('/friendlist', verifyToken, async (req, res) => {
+    try {
+        const user_id = req.user.user_id;
+        const friendList = await pool.query(`SELECT 
+            CASE WHEN sender_id = $1 THEN receiver_id ELSE sender_id END AS friend_id,
+            u.user_name,
+            u.preferred_lang
+            FROM friends f
+            JOIN users u ON u.id = CASE WHEN f.sender_id = $1 THEN f.receiver_id ELSE f.sender_id END
+            WHERE (f.sender_id = $1 OR f.receiver_id = $1)
+            AND f.status = 'accepted'`,
+            [user_id]);
+        if (friendList.rows.length === 0) {
+            return res.status(200).json({ message: "No Friends" });
+        }
+        res.status(200).json(friendList.rows);
+    } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+
+//get the favorite list from mutual friends 
+
+router.get('/favorites/:id', verifyToken, async (req, res) => {
+    const user_id = req.user.user_id;
+    const friend_id = req.params.id;
+    const getStatus = await pool.query(`SELECT status FROM friends 
+                            WHERE ((sender_id = $1 AND receiver_id = $2) 
+                            OR (sender_id = $2 AND receiver_id = $1))
+                            AND status = 'accepted'`, [user_id, friend_id]);
+    if (getStatus.rows.length === 0) {
+        return res.status(403).json({ message: "Unauthorized user" });
+    }
+    const apiEndPoint = process.env.MOVIE_ID_ENDPOINT;
+    const apiToken = process.env.API_TOKEN;
+    try {
+        const query = 'SELECT tmdb_movie_id from favorites WHERE user_id=$1';
+        //Fetch movie from tmdb
+        const fields = ['title', 'release_date', 'poster_path']
+
+        const result = await pool.query(query, [friend_id]);
+        const movies = result.rows;
+        console.log(movies);
+        const favMovies = await Promise.all(movies.map(async (movie) => {
+            const ratings = await pool.query(
+                'SELECT AVG(rating) as average_rating, COUNT(rating) as total_ratings, COUNT(review_text) as total_reviews FROM ratings WHERE tmdb_movie_id = $1',
+                [movie.tmdb_movie_id]
+            );
+            const userReview = await pool.query('SELECT review_text,rating FROM ratings WHERE user_id = $1 AND tmdb_movie_id= $2', [friend_id, movie.tmdb_movie_id]);
+            const url = `${apiEndPoint}/${movie.tmdb_movie_id}`
+            const tmdbResponse = await axios.get(url, {
+                headers: {
+                    accept: 'application/json',
+                    Authorization: `Bearer ${apiToken}`
+                }
+            });
+            const movie_data = tmdbResponse.data
+            const movieData = Object.fromEntries(Object.entries(movie_data).filter(([key]) => fields.includes(key)));
+            return {
+                ...movieData,
+                tmdb_movie_id: movie.tmdb_movie_id,
+                rating: parseFloat(ratings.rows[0].average_rating) || 0,
+                total_ratings: parseInt(ratings.rows[0].total_ratings) || 0,
+                total_reviews: parseInt(ratings.rows[0].total_reviews) || 0,
+                user_review: userReview.rows[0] || null
+            };
+        }));
+
+        res.status(200).json(favMovies);
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ message: error.message })
+    }
+
+
 });
 
 

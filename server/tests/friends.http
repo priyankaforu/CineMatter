@@ -21,7 +21,7 @@ Authorization: Bearer <paste_token_here>
 
 ### Get pending requests
 GET http://localhost:3000/api/friends/requests
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2LCJpYXQiOjE3NzcxMzE1OTQsImV4cCI6MTc3NzIxNzk5NH0.-5baNrPkuNf-grtQnNyA49Tc-1_oXT4eCncyOFyyDqs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2LCJpYXQiOjE3NzcxNDMxODksImV4cCI6MTc3NzIyOTU4OX0.kXK2wUsvOYqCuc4zNZMqOJ5A9vkKX6qcoQMDo7AYscc
 
 ### Accept friend request
 PUT http://localhost:3000/api/friends/1/accept

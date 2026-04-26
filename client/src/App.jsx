@@ -6,7 +6,9 @@ import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
 import Profile from './pages/Profile.jsx';
 import Logout from './pages/Logout.jsx';
-import { ChevronDown } from 'lucide-react';
+import TimeLine from './pages/TimeLine.jsx';
+import FriendsPage from './pages/friendsPage.jsx';
+import FriendsFavorites from './pages/FriendFavorites.jsx';
 // App.jsx
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -24,6 +26,9 @@ function App() {
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/logout" element={<Logout />} />
+                <Route path="/timeline" element={<TimeLine />} />
+                <Route path="/friends" element={<FriendsPage />} />
+                <Route path="/friends/:friendId/favorites" element={<FriendsFavorites />} />
             </Routes>
         </BrowserRouter>
     );
