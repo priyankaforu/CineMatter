@@ -10,6 +10,8 @@ import Logout from './pages/Logout.jsx';
 import TimeLine from './pages/TimeLine.jsx';
 import FriendsPage from './pages/friendsPage.jsx';
 import FriendsFavorites from './pages/FriendFavorites.jsx';
+import ForgotPassword from './pages/ForgotPassword.jsx';
+import ResetPassword from './pages/ResetPassword.jsx';
 // App.jsx
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -42,6 +44,8 @@ function App() {
                 <Route path="/timeline" element={<TimeLine />} />
                 <Route path="/friends" element={<FriendsPage />} />
                 <Route path="/friends/:friendId/favorites" element={<FriendsFavorites />} />
+                <Route path="/forgotpassword" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
             </Routes>
         </BrowserRouter>
     );

@@ -85,7 +85,7 @@ const Login = () => {
 
                     <div className="mt-6 pt-6 border-t border-gray-700">
                         <div className="flex justify-between text-sm">
-                            <Link to="/" className="text-gray-400 hover:text-white transition">Forgot password?</Link>
+                            <Link to="/forgotpassword" className="text-gray-400 hover:text-white hover: underline transition">Forgot password?</Link>
                             <Link to="/signup" className="text-yellow-500 hover:text-yellow-400 transition">Create an account</Link>
                         </div>
                     </div>
