@@ -25,8 +25,18 @@ router.post('/sendrequest', verifyToken, async (req, res) => {
     if (checkReceiverData.rows.length === 0) {
         return res.status(404).json({ message: "The receiver doesn't exist" });
     }
+    const senderData = await pool.query('SELECT user_name FROM users WHERE id=$1', [sender_id]);
+    const senderName = senderData.rows[0].user_name;
 
     const sendRequest = await pool.query('INSERT INTO friends(sender_id,receiver_id,status) VALUES($1,$2,$3) RETURNING *', [sender_id, receiver_id, 'pending']);
+
+    //socket event (emits)
+    const receiverSocketId = req.onlineUsers.get(parseInt(receiver_id));
+    if (receiverSocketId) {
+        req.io.to(receiverSocketId).emit('friend-request', {
+            message: `${senderName} sent you a friend request`
+        });
+    }
     res.status(200).json(sendRequest.rows[0]);
 });
 
@@ -42,8 +52,22 @@ router.put('/:id/accept', verifyToken, async (req, res) => {
     }
     const sender_id = checkStatus.rows[0].sender_id;
     const sender = await pool.query('SELECT user_name FROM users where id=$1', [checkStatus.rows[0].sender_id]);
+
+    //find the receiver name 
+    const receiverData = await pool.query('SELECT user_name FROM users WHERE id=$1', [receiver_id]);
+    const receiverName = receiverData.rows[0].user_name;
+
     try {
         const updateStatus = await pool.query('UPDATE friends SET status=$1 WHERE id=$2 RETURNING *', ['accepted', friend_id]);
+
+        const senderSocketId = req.onlineUsers.get(parseInt(sender_id));
+        {/* console.log('Sender socket:', senderSocketId);*/ }
+        if (senderSocketId) {
+            req.io.to(senderSocketId).emit('request-accepted', {
+                message: `${receiverName} accepted your friend request`
+            });
+        }
+
 
         // Delete any reverse pending request
         await pool.query('DELETE FROM friends WHERE sender_id=$1 AND receiver_id=$2', [receiver_id, sender_id]);
@@ -198,6 +222,21 @@ router.get('/favorites/:id', verifyToken, async (req, res) => {
     }
 
 
+});
+
+// Delete friends table based on the user_id 
+
+router.delete('/unfriend/:userId', verifyToken, async (req, res) => {
+    const friendUserId = req.params.userId;
+    const user_id = req.user.user_id;
+    const result = await pool.query(
+        'DELETE FROM friends WHERE ((sender_id=$1 AND receiver_id=$2) OR (sender_id=$2 AND receiver_id=$1)) AND status=$3',
+        [user_id, friendUserId, 'accepted']
+    );
+    if (result.rowCount === 0) {
+        return res.status(404).json({ message: "Friendship not found" });
+    }
+    res.status(200).json({ message: "Successfully Deleted" });
 });
 
 

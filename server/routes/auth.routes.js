@@ -72,7 +72,7 @@ router.post('/login', async (req, res) => {
 
 router.get('/profile', verifyToken, async (req, res) => {
     const user_id = req.user.user_id;
-    const query = 'SELECT user_name, user_mail, created_at FROM users WHERE id = $1';
+    const query = 'SELECT user_name, user_mail, preferred_lang, created_at FROM users WHERE id = $1';
     const result = await pool.query(query, [user_id]);
     if (result.rows.length === 0) {
         return res.status(404).json({ message: "user not found" });

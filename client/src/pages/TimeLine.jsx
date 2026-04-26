@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { getLanguage } from '../utils/getLanguage.js';
 import { toast } from 'react-toastify';
 import fetchFriends from '../utils/friendList.js';
+//import socket from '../utils/socket.js';
 
 const TimeLine = () => {
     const [users, setUsers] = useState([]);
@@ -98,6 +99,20 @@ const TimeLine = () => {
         fetchRequests();
         waitingApproval();
         fetchFriends().then(data => setFriends(data));
+        {/*if (socket) {
+            socket.on('friend-request', () => {
+                fetchRequests();
+                fetchUsers();
+            });
+            socket.on('request-accepted', () => {
+                fetchFriends().then(data => setFriends(data));
+                fetchUsers();
+            });
+            return () => {
+                socket.off('friend-request');
+                socket.off('request-accepted');
+            };
+        }*/}
     }, [])
 
     return (

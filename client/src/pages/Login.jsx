@@ -44,41 +44,52 @@ const Login = () => {
         console.log(formData);
     }
 
-    const inputClass = "w-full p-3 rounded-lg border border-gray-500 bg-transparent text-white focus:border-yellow-400 focus:outline-none";
     return (
-        <div className="flex flex-col items-center mt-6">
-            <form onSubmit={handleSubmit} className="flex flex-col space-y-4 p-6 w-full max-w-lg">
-                {error && <p className="text-red-500">{error}</p>}
-                <div className="relative">
-                    <User className="absolute left-3 top-3.5 text-gray-400" size={20} />
-                    <input
-                        name="userid"
-                        value={formData.userid}
-                        onChange={handleChange}
-                        placeholder="User name or email id"
-                        className={`${inputClass} pl-10 caret-white`}
-                    />
-                </div>
-                <div className="relative">
-                    <Lock className="absolute left-3 top-3.5 text-gray-400" size={18} />
-                    <input
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        placeholder="Type your password"
-                        className={`${inputClass} pl-10 caret-white`}
-                        type={showPasswords.password ? "text" : "password"}
-                    />
-                    <div className="absolute right-3 top-3.5 text-gray-400" onClick={() => togglePassword('password')}>
-                        {showPasswords.password ? <EyeOff size={20} /> : <Eye size={20} />}
+        <div className="flex items-center justify-center min-h-[80vh]">
+            <div className="w-full max-w-md">
+                <div className="bg-white/10 backdrop-blur-md rounded-lg p-8">
+                    <h1 className="text-2xl font-bold text-center mb-2">Welcome Back</h1>
+                    <p className="text-gray-400 text-center text-sm mb-8">Sign in to your Cinematter account</p>
+
+                    {error && <p className="text-red-400 text-sm text-center mb-4 bg-red-500/10 p-3 rounded-lg">{error}</p>}
+
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                        <div className="relative">
+                            <User className="absolute left-3 top-3.5 text-gray-400" size={18} />
+                            <input
+                                name="userid"
+                                value={formData.userid}
+                                onChange={handleChange}
+                                placeholder="Username or email"
+                                className="w-full p-3 pl-10 rounded-lg bg-white/5 border border-gray-600 text-white focus:border-yellow-500 focus:outline-none caret-white text-sm"
+                            />
+                        </div>
+                        <div className="relative">
+                            <Lock className="absolute left-3 top-3.5 text-gray-400" size={18} />
+                            <input
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                placeholder="Password"
+                                className="w-full p-3 pl-10 pr-10 rounded-lg bg-white/5 border border-gray-600 text-white focus:border-yellow-500 focus:outline-none caret-white text-sm"
+                                type={showPasswords.password ? "text" : "password"}
+                            />
+                            <div className="absolute right-3 top-3.5 text-gray-400 cursor-pointer" onClick={() => togglePassword('password')}>
+                                {showPasswords.password ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </div>
+                        </div>
+                        <button type="submit" className="bg-yellow-700 hover:bg-yellow-600 p-3 rounded-lg text-white font-medium transition cursor-pointer text-sm">
+                            Sign In
+                        </button>
+                    </form>
+
+                    <div className="mt-6 pt-6 border-t border-gray-700">
+                        <div className="flex justify-between text-sm">
+                            <Link to="/" className="text-gray-400 hover:text-white transition">Forgot password?</Link>
+                            <Link to="/signup" className="text-yellow-500 hover:text-yellow-400 transition">Create an account</Link>
+                        </div>
                     </div>
                 </div>
-                <button type="submit" className="bg-yellow-800 p-3 mt-4 rounded-sm"> Login </button>
-            </form>
-            <div className="flex flex-row gap-2 justify-center">
-                <Link to="/" className="text-gray-100 underline">Forgot Password ?</Link>
-                <span className="text-gray-400"> or </span>
-                <Link to="/signup" className="underline text-yellow-400"> Create an account </Link>
             </div>
         </div>
     );

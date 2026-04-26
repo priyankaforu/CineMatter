@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import socket from './utils/socket.js';
 import Home from './pages/Home';
 import MovieDetails from './pages/MovieDetails.jsx';
 import Header from './components/header.jsx';
@@ -12,7 +13,19 @@ import FriendsFavorites from './pages/FriendFavorites.jsx';
 // App.jsx
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
+
+
+if (socket) {
+    socket.on('friend-request', (data) => {
+        toast.info(data.message);
+    });
+
+    socket.on('request-accepted', (data) => {
+        toast.success(data.message);
+    })
+}
 
 function App() {
     return (
