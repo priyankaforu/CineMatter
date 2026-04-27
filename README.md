@@ -206,17 +206,18 @@ npm install
 Create a `.env` file in the server directory:
 
 ```env
-PORT=3000
-DB_USER=postgres
-DB_PASSWORD=your_password
+PORT = 3000
+API_KEY = your_tmdb_api_key
+API_TOKEN = your_tmdb_bearer_token
+API_ENDPOINT = https://api.themoviedb.org/3/discover/movie
+MOVIE_ID_ENDPOINT = https://api.themoviedb.org/3/movie
+DB_USER=postgres or (check your default on access level)
 DB_HOST=localhost
-DB_PORT=5432
 DB_NAME=cinematter
-JWT_SECRET_KEY=your_secret_key
-API_TOKEN=your_tmdb_bearer_token
-MOVIE_ID_ENDPOINT=https://api.themoviedb.org/3/movie
-GMAIL_USER=your_gmail@gmail.com
-GMAIL_APP_PASSWORD=your_app_password
+DB_PORT=5432
+JWT_SECRET_KEY=your_jwt_secret_key
+NODE_MAILER_PASS= the_gmail_password_but_not_your_personal
+
 ```
 
 ```bash
