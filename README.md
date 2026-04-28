@@ -13,7 +13,7 @@
 A full-stack movie review and favourites app for Indian regional language films. Discover movies in your preferred language, rate and review them, build a friends list, and see what your friends are watching — all in real time.
 
 **Live demo:** Coming soon  
-**Built by:** [@priyankaforu](https://x.com/priyankaforu)
+**Built by:** [@priyankapudi](https://x.com/priyankapudi)
 
 ---
 
@@ -295,5 +295,5 @@ cinematter/
 
 ## Built as part of
 
-[30 Projects in Plain JavaScript](https://x.com/priyankaforu) — Project 3  
+[30 Projects in Plain JavaScript](https://x.com/priyankapudi) — Project 3  
 No AI coding assistance. No frameworks for the sake of frameworks. Understanding every line.
