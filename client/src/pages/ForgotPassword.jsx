@@ -5,6 +5,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const ForgotPassword = () => {
+    const API_URL = import.meta.env.VITE_API_URL;
     const [email, setEmail] = useState('');
     const [otpSent, setOtpSent] = useState(false);
     const [otp, setOtp] = useState('');
@@ -21,7 +22,7 @@ const ForgotPassword = () => {
         setLoading(true);
         try {
 
-            const res = await axios.post('http://localhost:3000/api/password/forgot', { user_email: email });
+            const res = await axios.post('${API_URL}/api/password/forgot', { user_email: email });
             if (res.data) {
                 toast.success('OTP sent to your email!');
                 setOtpSent(true);
@@ -41,7 +42,7 @@ const ForgotPassword = () => {
         }
         console.log(otp);
         try {
-            const res = await axios.post(`http://localhost:3000/api/password/verifyOTP`, { client_otp: otp, user_email: email });
+            const res = await axios.post(`${API_URL}/api/password/verifyOTP`, { client_otp: otp, user_email: email });
             if (res.data) {
                 toast.success('OTP verified!');
                 navigate('/reset-password', { state: { email } })

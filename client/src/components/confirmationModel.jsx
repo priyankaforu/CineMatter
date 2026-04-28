@@ -4,11 +4,12 @@ import { toast } from 'react-toastify';
 const ConfirmationModel = ({ isOpen, onClose, movieId, movieTitle, onDeleted }) => {
     if (!isOpen) return null;
     const token = localStorage.getItem('token');
+    const API_URL = import.meta.env.VITE_API_URL;
 
     const handleConfirmation = async (e) => {
         e.preventDefault();
         try {
-            await axios.delete("http://localhost:3000/api/favorites", {
+            await axios.delete(`${API_URL}/api/favorites`, {
                 headers: { Authorization: `Bearer ${token}` },
                 data: { tmdb_movie_id: movieId }
             }).then(() => {

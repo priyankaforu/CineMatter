@@ -11,9 +11,10 @@ const Home = () => {
     const [language, setLanguage] = useState(localStorage.getItem('selectedLanguage') || 'te');
     const [searchQuery, setSearchQuery] = useState('');
 
+    const API_URL = import.meta.env.VITE_API_URL;
 
     const fetchMovies = () => {
-        axios.get(`http://localhost:3000/api/movies/?page=${pageValue}&&language=${language}`).then(res => {
+        axios.get(`${API_URL}/api/movies/?page=${pageValue}&&language=${language}`).then(res => {
             setMovies(res.data.movies), setTotalPages(res.data.total_pages)
         });
     }
@@ -33,7 +34,7 @@ const Home = () => {
             fetchMovies();
             return;
         }
-        axios.get(`http://localhost:3000/api/movies/search?q=${query}`,
+        axios.get(`${API_URL}/api/movies/search?q=${query}`,
             { headers: { Authorization: `Bearer ${token}` } }
         ).then(res => setMovies(res.data))
     }

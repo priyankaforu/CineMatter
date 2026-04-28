@@ -13,23 +13,24 @@ const TimeLine = () => {
     const [sentRequests, setSentRequests] = useState([]);
     const [showSent, setShowSent] = useState(false);
     const [friends, setFriends] = useState([]);
+    const API_URL = import.meta.env.VITE_API_URL;
 
     const token = localStorage.getItem('token');
     let isFriend = false;
     const fetchUsers = () => {
-        axios.get('http://localhost:3000/api/friends/users',
+        axios.get(`${API_URL}/api/friends/users`,
             { headers: { Authorization: `Bearer ${token}` } }).then(res => {
                 setUsers(res.data)
             })
     };
     const fetchRequests = () => {
-        axios.get('http://localhost:3000/api/friends/requests',
+        axios.get(`${API_URL}/api/friends/requests`,
             { headers: { Authorization: `Bearer ${token}` } }).then(res => {
                 setRequests(res.data)
             })
     }
     const sendRequest = (receiverId) => {
-        axios.post('http://localhost:3000/api/friends/sendrequest',
+        axios.post(`${API_URL}/api/friends/sendrequest`,
             { receiver_id: receiverId },
             { headers: { Authorization: `Bearer ${token}` } }
         ).then(() => {
@@ -41,14 +42,14 @@ const TimeLine = () => {
         });
     };
     const waitingApproval = () => {
-        axios.get('http://localhost:3000/api/friends/sent',
+        axios.get(`${API_URL}/api/friends/sent`,
             { headers: { Authorization: `Bearer ${token}` } }
         ).then(res => {
             setSentRequests(res.data)
         })
     }
     const acceptRequest = (friendshipId) => {
-        axios.put(`http://localhost:3000/api/friends/${friendshipId}/accept`, {}, {
+        axios.put(`${API_URL}/api/friends/${friendshipId}/accept`, {}, {
             headers: { Authorization: `Bearer ${token}` }
         }).then(() => {
             toast.success('Friend request accepted!');
@@ -65,7 +66,7 @@ const TimeLine = () => {
         const query = e.target.value;
         setSearchQuery(query);
         if (query.length > 0) {
-            axios.get(`http://localhost:3000/api/friends/search?q=${query}`, {
+            axios.get(`${API_URL}/api/friends/search?q=${query}`, {
                 headers: { Authorization: `Bearer ${token}` }
             }).then(res => setSearchResults(res.data))
                 .catch(() => setSearchResults([]));
@@ -75,7 +76,7 @@ const TimeLine = () => {
     };
 
     const deleteRequest = (deleteId, deletedName) => {
-        axios.delete(`http://localhost:3000/api/friends/${deleteId}`,
+        axios.delete(`${API_URL}/api/friends/${deleteId}`,
             { headers: { Authorization: `Bearer ${token}` } }).then(res => {
                 if (res.data.message === 'Successfully Rejected') {
                     toast.success(`${deletedName} is removed Successfully`);

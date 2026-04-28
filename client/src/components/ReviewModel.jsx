@@ -4,6 +4,7 @@ import axios from 'axios';
 const ReviewModel = ({ isOpen, onClose, movieId, onReviewPosted }) => {
     const [rating, setRating] = useState('');
     const [review, setReview] = useState('');
+    const API_URL = import.meta.env.API_URL;
 
     if (!isOpen) return null;
     const token = localStorage.getItem('token');
@@ -11,7 +12,7 @@ const ReviewModel = ({ isOpen, onClose, movieId, onReviewPosted }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:3000/api/ratings',
+            await axios.post(`${API_URL}/api/ratings`,
                 { tmdb_movie_id: movieId, review_text: review, rating: Number(rating) },
                 { headers: { Authorization: `Bearer ${token}` } });
             onReviewPosted();
@@ -19,7 +20,7 @@ const ReviewModel = ({ isOpen, onClose, movieId, onReviewPosted }) => {
         } catch (err) {
             const overwrite = window.confirm(`You have already rated or reviewed for the movie, do you want to overwrite ?`);
             if (err.response?.status === 400) {
-                await axios.post('http://localhost:3000/api/ratings',
+                await axios.post(`${API_URL}/api/ratings`,
                     { tmdb_movie_id: movieId, review_text: review, rating: rating, overwrite_ratings: overwrite },
                     { headers: { Authorization: `Bearer ${token}` } });
                 onReviewPosted();

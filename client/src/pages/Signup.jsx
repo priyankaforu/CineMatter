@@ -18,6 +18,7 @@ const Signup = () => {
     const navigate = useNavigate();
     const [error, setError] = useState('');
     const [showPasswords, setShowPasswords] = useState({ password: false, confirmPassword: false });
+    const API_URL = import.meta.env.VITE_API_URL;
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -54,7 +55,7 @@ const Signup = () => {
         }
 
         try {
-            await axios.post('http://localhost:3000/api/auth/signup', {
+            await axios.post(`${API_URL}/api/auth/signup`, {
                 user_name: formData.username,
                 user_mail: formData.usermail,
                 password: formData.password,

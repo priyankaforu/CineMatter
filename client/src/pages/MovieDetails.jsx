@@ -9,6 +9,7 @@ import { Heart } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 const MovieDetails = () => {
+    const API_URL = import.meta.env.VITE_API_URL;
     const { id } = useParams();
     const [movieDetails, setMovieDetails] = useState(null);
     const [showReviewModel, setShowReviewModel] = useState(false);
@@ -17,12 +18,12 @@ const MovieDetails = () => {
 
     const token = localStorage.getItem('token');
     const fetchMovieDetails = () => {
-        axios.get(`http://localhost:3000/api/ratings/${id}`).then(res => setMovieDetails(res.data));
+        axios.get(`${API_URL}/api/ratings/${id}`).then(res => setMovieDetails(res.data));
     }
 
     const onAddFavorites = (movieId, movieTitle) => {
         if (!favorites) {
-            axios.post('http://localhost:3000/api/favorites',
+            axios.post('${API_URL}/api/favorites',
                 { tmdb_movie_id: movieId },
                 { headers: { Authorization: `Bearer ${token}` } }).then(() => {
                     setFavorites(true);
@@ -35,7 +36,7 @@ const MovieDetails = () => {
     }
 
     const checkFavorites = () => {
-        axios.get('http://localhost:3000/api/favorites',
+        axios.get('${API_URL}/api/favorites',
             { headers: { Authorization: `Bearer ${token}` } }
         ).then(res => {
             const isFavorite = res.data.some(fav => fav.tmdb_movie_id == Number(id));

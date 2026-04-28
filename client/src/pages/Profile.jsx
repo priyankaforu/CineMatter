@@ -11,8 +11,9 @@ const Profile = () => {
     const token = localStorage.getItem('token');
     const [showConfirm, setShowConfirm] = useState(false);
     const [selectedMovie, setSelectedMovie] = useState(null);
+    const API_URL = import.meta.env.VITE_API_URL;
     const fetchFavorites = () => {
-        axios.get('http://localhost:3000/api/favorites',
+        axios.get(`${API_URL}/api/favorites`,
             {
                 headers: { Authorization: `Bearer ${token}` }
             }).then(res => {
@@ -24,7 +25,7 @@ const Profile = () => {
     useEffect(() => {
         fetchFavorites();
         const token = localStorage.getItem('token');
-        axios.get('http://localhost:3000/api/auth/profile', {
+        axios.get(`${API_URL}/api/auth/profile`, {
             headers: { Authorization: `Bearer ${token}` }
         }).then(res => setProfile(res.data));
     }, []);

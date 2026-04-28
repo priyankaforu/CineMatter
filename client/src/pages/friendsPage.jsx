@@ -14,8 +14,10 @@ const FriendsPage = () => {
     const [selectedFriend, setSelectedFriend] = useState(null);
     const navigate = useNavigate();
 
+    const API_URL = import.meta.env.VITE_API_URL;
+
     const deleteFriend = (deleteId, deletedName) => {
-        axios.delete(`http://localhost:3000/api/friends/unfriend/${deleteId}`,
+        axios.delete(`${API_URL}/api/friends/unfriend/${deleteId}`,
             { headers: { Authorization: `Bearer ${token}` } }).then(res => {
                 toast.success(`${deletedName} removed from friends`);
                 fetchFriends().then(data => setFriends(data));

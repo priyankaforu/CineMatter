@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { User, Lock, Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 
+
 const Login = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ const Login = () => {
     });
     const [error, setError] = useState('');
     const [showPasswords, setShowPasswords] = useState({ password: false, confirmPassword: false });
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -21,6 +23,7 @@ const Login = () => {
         setShowPasswords({ ...showPasswords, [field]: !showPasswords[field] });
     }
     const handleSubmit = async (e) => {
+        const API_URL = import.meta.env.VITE_API_URL;
         e.preventDefault();
 
         if (!formData.userid || !formData.password) {
@@ -28,7 +31,7 @@ const Login = () => {
             return;
         }
         try {
-            const res = await axios.post("http://localhost:3000/api/auth/login",
+            const res = await axios.post("${API_URL}/api/auth/login",
                 {
                     user_id: formData.userid,
                     password: formData.password

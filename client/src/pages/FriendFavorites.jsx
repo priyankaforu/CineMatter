@@ -10,10 +10,11 @@ const FriendsFavorites = () => {
     const [fav, setFav] = useState([]);
     const token = localStorage.getItem('token');
     const [loading, setLoading] = useState(true);
+    const API_URL = import.meta.env.VITE_API_URL;
 
     const friendName = state?.friendName || "Friend";
     useEffect(() => {
-        axios.get(`http://localhost:3000/api/friends/favorites/${friendId}`,
+        axios.get(`${API_URL}/api/friends/favorites/${friendId}`,
             { headers: { Authorization: `Bearer ${token}` } }
         ).then(res => { setFav(res.data); setLoading(false); })
             .catch(err => { console.log(err); setLoading(false); });

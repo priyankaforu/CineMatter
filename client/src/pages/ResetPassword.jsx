@@ -12,7 +12,7 @@ const ResetPassword = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [showPasswords, setShowPasswords] = useState({ password: false, confirm: false });
-
+    const API_URL = import.meta.env.API_URL;
     if (!email) {
         return (
             <div className="flex items-center justify-center min-h-[80vh]">
@@ -36,7 +36,7 @@ const ResetPassword = () => {
             return;
         }
         try {
-            const res = await axios.put('http://localhost:3000/api/password/reset', {
+            const res = await axios.put(`${API_URL}/api/password/reset`, {
                 user_email: email,
                 new_password: password
             });
