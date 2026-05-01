@@ -20,8 +20,10 @@ const app = express();
 const server = createServer(app);
 const onlineUsers = new Map();
 const CLIENT_URL = process.env.CLIENT_URL;
+
+const allowedOrigins = ['https://cinematter.site', 'https://cinematter.pages.dev'];
 const io = new Server(server, {
-    cors: { origin: `${CLIENT_URL}` }
+    cors: { origin: allowedOrigins }
 });
 
 {/* if cors then { cors :{origin: 'http...' }*/ }
