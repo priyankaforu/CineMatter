@@ -23,7 +23,7 @@ const MovieDetails = () => {
 
     const onAddFavorites = (movieId, movieTitle) => {
         if (!favorites) {
-            axios.post('${API_URL}/api/favorites',
+            axios.post(`${API_URL}/api/favorites`,
                 { tmdb_movie_id: movieId },
                 { headers: { Authorization: `Bearer ${token}` } }).then(() => {
                     setFavorites(true);
