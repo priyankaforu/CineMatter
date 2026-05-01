@@ -31,7 +31,7 @@ const Login = () => {
             return;
         }
         try {
-            const res = await axios.post("${API_URL}/api/auth/login",
+            const res = await axios.post(`${API_URL}/api/auth/login`,
                 {
                     user_id: formData.userid,
                     password: formData.password
