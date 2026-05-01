@@ -36,7 +36,7 @@ const MovieDetails = () => {
     }
 
     const checkFavorites = () => {
-        axios.get('${API_URL}/api/favorites',
+        axios.get(`${API_URL}/api/favorites`,
             { headers: { Authorization: `Bearer ${token}` } }
         ).then(res => {
             const isFavorite = res.data.some(fav => fav.tmdb_movie_id == Number(id));
